@@ -1,4 +1,4 @@
-package ru.dorofeev22.simplewebapplication.entity;
+package ru.medlinesoft.simplewebapplication.entity;
 
 import java.sql.Date;
 
