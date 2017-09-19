@@ -20,7 +20,9 @@
         <div>
             <table>
                 <tr>
-                    <th>PN</th>
+                    <th>
+                        <a href="/simpleWebApplication?order=desc">PN</a>
+                    </th>
                     <th>PartName</th>
                     <th>Vendor</th>
                     <th>Qty</th>

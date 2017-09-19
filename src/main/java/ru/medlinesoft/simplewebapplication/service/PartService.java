@@ -13,9 +13,9 @@ import ru.medlinesoft.simplewebapplication.repository.PartRepository;
  */
 public class PartService {
 
-    public List<PartDto> findDtoParts() throws ClassNotFoundException {
+    public List<PartDto> findDtoParts(String order) throws ClassNotFoundException {
         List<PartDto> dtos = new ArrayList<>();
-        for (Part part : findParts()) {
+        for (Part part : findParts(order)) {
             dtos.add(toDto(part));
         }
         return dtos;
@@ -33,8 +33,8 @@ public class PartService {
         return dto;
     }
 
-    private List<Part> findParts() throws ClassNotFoundException {
-        return new PartRepository().findParts();
+    private List<Part> findParts(String order) throws ClassNotFoundException {
+        return new PartRepository().findParts(order);
     }
 
 }

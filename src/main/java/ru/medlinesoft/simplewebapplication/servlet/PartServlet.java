@@ -20,9 +20,10 @@ public class PartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        String order = request.getParameter("order");
         List<PartDto> parts = new ArrayList<>();
         try {
-            parts = new PartService().findDtoParts();
+            parts = new PartService().findDtoParts(order);
         } catch (ClassNotFoundException ex) {
             request.setAttribute( "error", ex.getMessage());
         }
