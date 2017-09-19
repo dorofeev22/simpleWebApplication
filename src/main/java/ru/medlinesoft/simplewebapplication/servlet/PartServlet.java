@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ru.medlinesoft.simplewebapplication.dto.PartDto;
+import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldsName;
+import ru.medlinesoft.simplewebapplication.entity.ReferenceSortOrder;
 import ru.medlinesoft.simplewebapplication.service.PartService;
 
 /**
@@ -21,13 +23,20 @@ public class PartServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         String order = request.getParameter("order");
+        String fieldsName = request.getParameter("columnName");
         List<PartDto> parts = new ArrayList<>();
         try {
-            parts = new PartService().findDtoParts(order);
+            parts = new PartService().findDtoParts(order, fieldsName);
         } catch (ClassNotFoundException ex) {
             request.setAttribute( "error", ex.getMessage());
         }
         request.setAttribute("parts", parts);
+        request.setAttribute("part_number_order", 
+                ReferenceFieldsName.getOrderSortByActualFields(
+                        fieldsName, "part_number_order", order));
+        request.setAttribute("part_name_order", 
+                ReferenceFieldsName.getOrderSortByActualFields(
+                        fieldsName, "part_name_order", order));
         request.getRequestDispatcher("/WEB-INF/parts.jsp").forward(request, response);
     }
     

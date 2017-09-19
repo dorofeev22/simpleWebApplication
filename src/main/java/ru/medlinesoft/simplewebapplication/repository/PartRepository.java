@@ -28,8 +28,8 @@ public class PartRepository {
         }
     }
 
-    public List<Part> findParts(String order) throws ClassNotFoundException {
-        String orderTextSubquery = order != null ? " ORDER BY part_number " + order : "";
+    public List<Part> findParts(String order, String columnName) throws ClassNotFoundException {
+        String orderTextSubquery = order != null ? " ORDER BY " + columnName + " " + order : "";
         String textQuery = 
                 "SELECT part_name, part_number, vendor, qty, shipped, receive "
                 + "FROM medlinesoft.part" + orderTextSubquery;

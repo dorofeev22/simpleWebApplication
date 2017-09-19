@@ -13,17 +13,22 @@
     <body>
         <h1>Parts</h1>
             <%
-                String error = (String)request.getParameter("error");
+                String error = (String)request.getAttribute("error");
+                String contextPath = request.getContextPath();
                 List<PartDto> parts = (ArrayList<PartDto>)request.getAttribute("parts");
+                String partNumberOrder = (String)request.getAttribute("part_number_order");
+                String partNameOrder = (String)request.getAttribute("part_name_order");
             %>
         <p><%= error %></p>
         <div>
             <table>
                 <tr>
                     <th>
-                        <a href="/simpleWebApplication?order=desc">PN</a>
+                        <a href="<%= contextPath %>?order=<%= partNumberOrder %>&columnName=part_number">PN</a>
                     </th>
-                    <th>PartName</th>
+                    <th>
+                        <a href="<%= contextPath %>?order=<%= partNameOrder %>&columnName=part_name">PartName</a>
+                    </th>
                     <th>Vendor</th>
                     <th>Qty</th>
                     <th>Shipped</th>
