@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import ru.medlinesoft.simplewebapplication.entity.Part;
+import ru.medlinesoft.simplewebapplication.dto.PartDto;
 import ru.medlinesoft.simplewebapplication.service.PartService;
 
 /**
@@ -20,9 +20,9 @@ public class PartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        List<Part> parts = new ArrayList<>();
+        List<PartDto> parts = new ArrayList<>();
         try {
-            parts = new PartService().findParts();
+            parts = new PartService().findDtoParts();
         } catch (ClassNotFoundException ex) {
             request.setAttribute( "error", ex.getMessage());
         }
