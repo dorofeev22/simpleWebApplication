@@ -1,5 +1,6 @@
 package ru.medlinesoft.simplewebapplication.service;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,7 +18,7 @@ import ru.medlinesoft.simplewebapplication.repository.PartRepository;
 public class PartService {
 
     public List<PartDto> findDtoParts(PartParameters parameters) 
-            throws ClassNotFoundException, ParseException {
+            throws ClassNotFoundException, ParseException, IOException {
         List<PartDto> dtos = new ArrayList<>();
         for (Part part : new PartRepository().findParts(parameters)) {
             dtos.add(toDto(part));

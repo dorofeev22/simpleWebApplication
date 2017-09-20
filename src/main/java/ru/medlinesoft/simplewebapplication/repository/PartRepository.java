@@ -1,6 +1,9 @@
 package ru.medlinesoft.simplewebapplication.repository;
 
 import com.google.common.base.Strings;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -9,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import ru.medlinesoft.simplewebapplication.domain.ParameterNames;
 import ru.medlinesoft.simplewebapplication.entity.Part;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldName;
@@ -19,12 +23,20 @@ import ru.medlinesoft.simplewebapplication.model.PartParameters;
  */
 public class PartRepository {
     
-    private Connection getConnection() throws ClassNotFoundException {
-        // TODO create application.properties;
+    private Connection getConnection() throws ClassNotFoundException, IOException {
+        Properties prop = new Properties();
+        InputStream inputStream;
+        String propFileName = "application.properties";
+        inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+        if (inputStream != null) {
+            prop.load(inputStream);
+        } else {
+            throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+        }
         Class.forName("org.postgresql.Driver");
-        String userName = "postgres";
-        String password = "W#nlt^c0w";
-        String url = "jdbc:postgresql://localhost/medlinesoft";
+        String userName = prop.getProperty("user");
+        String password = prop.getProperty("password");;
+        String url = prop.getProperty("url");
         try {
             Connection connection = DriverManager.getConnection(url, userName, password);
             return connection;
@@ -33,7 +45,8 @@ public class PartRepository {
         }
     }
 
-    public List<Part> findParts(PartParameters parameters) throws ClassNotFoundException, ParseException {
+    public List<Part> findParts(PartParameters parameters) 
+            throws ClassNotFoundException, ParseException, IOException {
         List<Part> parts = new ArrayList<>();
         try {
             Connection connection = getConnection();
