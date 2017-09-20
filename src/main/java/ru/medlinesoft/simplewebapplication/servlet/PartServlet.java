@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ru.medlinesoft.simplewebapplication.dto.PartDto;
+import ru.medlinesoft.simplewebapplication.domain.ParameterNames;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldsName;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
 import ru.medlinesoft.simplewebapplication.service.PartService;
@@ -41,39 +42,16 @@ public class PartServlet extends HttpServlet {
         String order = request.getParameter("order");
         String orderedFieldName = request.getParameter("columnName");
         Map<String, String> searchParameters = new HashMap<>();
-        String searchPartNumberInput = request.getParameter("part_number_input");
-        if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
-            searchParameters.put("part_number_input", searchPartNumberInput);
-        }
-        String searchPartNameInput = request.getParameter("part_name_input");
-        if (!Strings.isNullOrEmpty(searchPartNameInput)) {
-            searchParameters.put("part_name_input", searchPartNameInput);
-        }
-        String searchVendorInput = request.getParameter("vendor_input");
-        if (!Strings.isNullOrEmpty(searchVendorInput)) {
-            searchParameters.put("vendor_input", searchVendorInput);
-        }
-        String searchQtyInput = request.getParameter("qty_input");
-        if (!Strings.isNullOrEmpty(searchQtyInput)) {
-            searchParameters.put("qty_input", searchQtyInput);
-        }
-        String searchShippedAfterInput = request.getParameter("shipped_after_input");
-        if (!Strings.isNullOrEmpty(searchShippedAfterInput)) {
-            searchParameters.put("shipped_after_input", searchShippedAfterInput);
-        }
-        String searchShippedBeforeInput = request.getParameter("shipped_before_input");
-        if (!Strings.isNullOrEmpty(searchShippedBeforeInput)) {
-            searchParameters.put("shipped_before_input", searchShippedBeforeInput);
-        }
-        String searchReceiveAfterInput = request.getParameter("receive_after_input");
-        if (!Strings.isNullOrEmpty(searchReceiveAfterInput)) {
-            searchParameters.put("receive_after_input", searchReceiveAfterInput);
-        }
-        String searchReceiveBeforeInput = request.getParameter("receive_before_input");
-        if (!Strings.isNullOrEmpty(searchReceiveBeforeInput)) {
-            searchParameters.put("receive_before_input", searchReceiveBeforeInput);
-        }
-        PartParameters partParameters = new PartParameters(order, orderedFieldName, searchParameters);
+        putParameter(request, ParameterNames.PART_NUMBER_INPUT, searchParameters);
+        putParameter(request, ParameterNames.PART_NAME_INPUT, searchParameters);
+        putParameter(request, ParameterNames.VENDOR_INPUT, searchParameters);
+        putParameter(request, ParameterNames.QTY_INPUT, searchParameters);
+        putParameter(request, ParameterNames.SHIPPED_AFTER_INPUT, searchParameters);
+        putParameter(request, ParameterNames.SHIPPED_BEFORE_INPUT, searchParameters);
+        putParameter(request, ParameterNames.RECEIVE_AFTER_INPUT, searchParameters);
+        putParameter(request, ParameterNames.RECEIVE_BEFORE_INPUT, searchParameters);
+        PartParameters partParameters = 
+                new PartParameters(order, orderedFieldName, searchParameters);
         try {
             parts = new PartService().findDtoParts(partParameters);
         } catch (ClassNotFoundException ex) {
@@ -102,6 +80,16 @@ public class PartServlet extends HttpServlet {
                         orderedFieldName, "receive_order", order));
         request.setAttribute("search_params", searchParameters);
         request.getRequestDispatcher("/WEB-INF/parts.jsp").forward(request, response);
+    }
+    
+    private void putParameter(
+            HttpServletRequest request, 
+            String parameterName, 
+            Map<String, String> searchParameters) {
+        String searchPartNumberInput = request.getParameter(parameterName);
+        if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
+            searchParameters.put(parameterName, searchPartNumberInput);
+        }
     }
 
 }

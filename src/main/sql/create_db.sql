@@ -1,4 +1,4 @@
-﻿DROP DATABASE medlinesoft;
+﻿DROP DATABASE IF EXISTS medlinesoft;
 CREATE DATABASE medlinesoft
   WITH OWNER = postgres
        ENCODING = 'UTF8'
