@@ -1,4 +1,4 @@
-﻿/* DROP DATABASE medlinesoft; */
+﻿DROP DATABASE medlinesoft;
 CREATE DATABASE medlinesoft
   WITH OWNER = postgres
        ENCODING = 'UTF8'
@@ -58,8 +58,8 @@ CREATE INDEX part_receive_idx
 
 INSERT INTO medlinesoft.part(part_name, part_number, vendor, qty, shipped, receive)
     VALUES 
-('первая партия', 1, 'Toyota', 100, '2017-02-06', '2017-03-15'),
-('вторая партия', 2, 'ВАЗ', 750, '2017-05-12', '2017-09-25'),
-('третья партия', 3, 'Opel', 20, '2017-01-26', '2017-03-18'),
-('четвертая партия', 4, 'BMW', 34, '2017-04-08', '2017-06-25'),
-('пятная партия', 5, 'Ford', 2, '2017-05-22', '2017-07-05');
+('first part', 1, 'Toyota', 100, '2017-02-06', '2017-03-15'),
+('second part', 2, 'Daewoo', 750, '2017-05-12', '2017-09-25'),
+('third part', 3, 'Opel', 20, '2017-01-26', '2017-03-18'),
+('fourth part', 4, 'BMW', 34, '2017-04-08', '2017-06-25'),
+('fifth part', 5, 'Ford', 2, '2017-05-22', '2017-07-05');

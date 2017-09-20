@@ -1,11 +1,14 @@
 package ru.medlinesoft.simplewebapplication.service;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import ru.medlinesoft.simplewebapplication.dto.PartDto;
 import ru.medlinesoft.simplewebapplication.entity.Part;
+import ru.medlinesoft.simplewebapplication.model.PartParameters;
 import ru.medlinesoft.simplewebapplication.repository.PartRepository;
 
 /**
@@ -13,9 +16,10 @@ import ru.medlinesoft.simplewebapplication.repository.PartRepository;
  */
 public class PartService {
 
-    public List<PartDto> findDtoParts(String order, String columnName) throws ClassNotFoundException {
+    public List<PartDto> findDtoParts(PartParameters parameters) 
+            throws ClassNotFoundException, ParseException {
         List<PartDto> dtos = new ArrayList<>();
-        for (Part part : findParts(order, columnName)) {
+        for (Part part : new PartRepository().findParts(parameters)) {
             dtos.add(toDto(part));
         }
         return dtos;
@@ -23,7 +27,7 @@ public class PartService {
 
     private PartDto toDto(Part part) {
         PartDto dto = new PartDto();
-        DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+        DateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
         dto.setPartName(part.getPartName());
         dto.setPartNumber(part.getPartNumber());
         dto.setQty(String.valueOf(part.getQty()));
@@ -31,10 +35,6 @@ public class PartService {
         dto.setShipped(df.format(part.getShipped()));
         dto.setVendor(part.getVendor());
         return dto;
-    }
-
-    private List<Part> findParts(String order, String columnName) throws ClassNotFoundException {
-        return new PartRepository().findParts(order, columnName);
     }
 
 }

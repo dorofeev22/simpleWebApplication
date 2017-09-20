@@ -1,5 +1,5 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="ru.medlinesoft.simplewebapplication.dto.PartDto"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="ru.medlinesoft.simplewebapplication.dto.PartDto"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
 
@@ -23,7 +23,44 @@
                 String shippedOrder = (String)request.getAttribute("shipped_order");
                 String receivedOrder = (String)request.getAttribute("receive_order");
             %>
-        <p><%= error %></p>
+        <p><%= error != null ? error : "" %></p>
+        <div>
+            <form action="<%= contextPath %>">
+                <table>
+                    <tr>
+                        <td>PN</td>
+                        <td><input type="text" name="part_number_input"/></td>
+                    </tr>
+                    <tr>
+                        <td>Part Name</td>
+                        <td><input type="text" name="part_name_input"/></td>
+                    </tr>
+                    <tr>
+                        <td>Vendor</td>
+                        <td><input type="text" name="vendor_input"/></td>
+                    </tr>
+                    <tr>
+                        <td>Qty</td>
+                        <td><input type="number" name="qty_input"/></td>
+                    </tr>
+                    <tr>
+                        <td>Shipped</td>
+                        <td>
+                            after<input type="date" name="shipped_after_input"/>
+                             before<input type="date" name="shipped_before_input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Receive</td>
+                        <td>
+                            after<input type="date" name="receive_after_input"/>
+                             before<input type="date" name="receive_before_input"/>
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit" value="Найти"/>
+            </form>
+        </div>
         <div>
             <table>
                 <tr>
