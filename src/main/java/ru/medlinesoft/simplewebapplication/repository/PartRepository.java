@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import ru.medlinesoft.simplewebapplication.entity.Part;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldsName;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
@@ -59,79 +60,83 @@ public class PartRepository {
             PartParameters parameters, Connection connection) throws SQLException, ParseException {
         String order = parameters.getOrder();
         String orderedFieldName = parameters.getOrderedFieldName();
-        String searchPartNumberInput = parameters.getSearchPartNumberInput();
-        String searchPartNameInput = parameters.getSearchPartNameInput();
-        String searchVendorInput = parameters.getSearchVendorInput();
-        String searchQtyInput = parameters.getSearchQtyInput();
-        String searchShippedAfterInput = parameters.getSearchShippedAfterInput();
-        String searchShippedBeforeInput = parameters.getSearchShippedBeforeInput();
-        String searchReceiveAfterInput = parameters.getSearchReceiveAfterInput();
-        String searchReceiveBeforeInput = parameters.getSearchReceiveBeforeInput();
         String orderQueryPartText = order != null ? " ORDER BY " + orderedFieldName + " " + order : "";
-        List<Object> searchParams = new ArrayList<>();
-        StringBuilder clauseQueryPartText = new StringBuilder(" WHERE ");
-        if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
-            clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.part_number.name()).append(") LIKE ? ");
-            searchPartNumberInput = "%" + searchPartNumberInput.toLowerCase() + "%";
-            searchParams.add(searchPartNumberInput);
-        }
-        if (!Strings.isNullOrEmpty(searchPartNameInput)) {
-            if (!searchParams.isEmpty()) {
-                clauseQueryPartText.append(" AND ");
+        StringBuilder clauseQueryPartText = new StringBuilder();
+        Map<String, String> searchParameters = parameters.getSearchParameters();
+        List<Object> querySearchParams = new ArrayList<>();
+        if (searchParameters != null) {
+            String searchPartNumberInput = searchParameters.get("part_number_input");
+            String searchPartNameInput = searchParameters.get("part_name_input");
+            String searchVendorInput = searchParameters.get("vendor_input");
+            String searchQtyInput = searchParameters.get("qty_input");
+            String searchShippedAfterInput = searchParameters.get("shipped_after_input");
+            String searchShippedBeforeInput = searchParameters.get("shipped_before_input");
+            String searchReceiveAfterInput = searchParameters.get("receive_after_input");
+            String searchReceiveBeforeInput = searchParameters.get("receive_before_input");
+            clauseQueryPartText.append(" WHERE ");
+            if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
+                clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.part_number.name()).append(") LIKE ? ");
+                searchPartNumberInput = "%" + searchPartNumberInput.toLowerCase() + "%";
+                querySearchParams.add(searchPartNumberInput);
             }
-            clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.part_name.name()).append(") LIKE ? ");
-            searchPartNameInput = "%" + searchPartNameInput.toLowerCase() + "%";
-            searchParams.add(searchPartNameInput);
-        }
-        if (!Strings.isNullOrEmpty(searchVendorInput)) {
-            if (!searchParams.isEmpty()) {
-                clauseQueryPartText.append(" AND ");
+            if (!Strings.isNullOrEmpty(searchPartNameInput)) {
+                if (!querySearchParams.isEmpty()) {
+                    clauseQueryPartText.append(" AND ");
+                }
+                clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.part_name.name()).append(") LIKE ? ");
+                searchPartNameInput = "%" + searchPartNameInput.toLowerCase() + "%";
+                querySearchParams.add(searchPartNameInput);
             }
-            clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.vendor.name()).append(") LIKE ? ");
-            searchVendorInput = "%" + searchVendorInput.toLowerCase() + "%";
-            searchParams.add(searchVendorInput);
-        }
-        if (!Strings.isNullOrEmpty(searchQtyInput)) {
-            if (!searchParams.isEmpty()) {
-                clauseQueryPartText.append(" AND ");
+            if (!Strings.isNullOrEmpty(searchVendorInput)) {
+                if (!querySearchParams.isEmpty()) {
+                    clauseQueryPartText.append(" AND ");
+                }
+                clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.vendor.name()).append(") LIKE ? ");
+                searchVendorInput = "%" + searchVendorInput.toLowerCase() + "%";
+                querySearchParams.add(searchVendorInput);
             }
-            clauseQueryPartText.append(ReferenceFieldsName.qty.name()).append(" >= ? ");
-            searchParams.add(Integer.valueOf(searchQtyInput));
-        }
-        if (!Strings.isNullOrEmpty(searchShippedAfterInput) 
-                && !Strings.isNullOrEmpty(searchShippedBeforeInput)) {
-            if (!searchParams.isEmpty()) {
-                clauseQueryPartText.append(" AND ");
+            if (!Strings.isNullOrEmpty(searchQtyInput)) {
+                if (!querySearchParams.isEmpty()) {
+                    clauseQueryPartText.append(" AND ");
+                }
+                clauseQueryPartText.append(ReferenceFieldsName.qty.name()).append(" >= ? ");
+                querySearchParams.add(Integer.valueOf(searchQtyInput));
             }
-            clauseQueryPartText.append(ReferenceFieldsName.shipped.name()).append(" BETWEEN ? AND ? ");
-            searchParams.add(new java.sql.Date(getDateFormat().parse(searchShippedAfterInput).getTime()));
-            searchParams.add(new java.sql.Date(getDateFormat().parse(searchShippedBeforeInput).getTime()));
-        }
-        if (!Strings.isNullOrEmpty(searchReceiveAfterInput) 
-                && !Strings.isNullOrEmpty(searchReceiveBeforeInput)) {
-            if (!searchParams.isEmpty()) {
-                clauseQueryPartText.append(" AND ");
+            if (!Strings.isNullOrEmpty(searchShippedAfterInput) 
+                    && !Strings.isNullOrEmpty(searchShippedBeforeInput)) {
+                if (!querySearchParams.isEmpty()) {
+                    clauseQueryPartText.append(" AND ");
+                }
+                clauseQueryPartText.append(ReferenceFieldsName.shipped.name()).append(" BETWEEN ? AND ? ");
+                querySearchParams.add(new java.sql.Date(getDateFormat().parse(searchShippedAfterInput).getTime()));
+                querySearchParams.add(new java.sql.Date(getDateFormat().parse(searchShippedBeforeInput).getTime()));
             }
-            clauseQueryPartText.append(ReferenceFieldsName.receive.name()).append(" BETWEEN ? AND ? ");
-            searchParams.add(new java.sql.Date(getDateFormat().parse(searchReceiveAfterInput).getTime()));
-            searchParams.add(new java.sql.Date(getDateFormat().parse(searchReceiveBeforeInput).getTime()));
-        }
-        if (searchParams.isEmpty()) {
-            clauseQueryPartText = new StringBuilder();
+            if (!Strings.isNullOrEmpty(searchReceiveAfterInput) 
+                    && !Strings.isNullOrEmpty(searchReceiveBeforeInput)) {
+                if (!querySearchParams.isEmpty()) {
+                    clauseQueryPartText.append(" AND ");
+                }
+                clauseQueryPartText.append(ReferenceFieldsName.receive.name()).append(" BETWEEN ? AND ? ");
+                querySearchParams.add(new java.sql.Date(getDateFormat().parse(searchReceiveAfterInput).getTime()));
+                querySearchParams.add(new java.sql.Date(getDateFormat().parse(searchReceiveBeforeInput).getTime()));
+            }
+            if (querySearchParams.isEmpty()) {
+                clauseQueryPartText = new StringBuilder();
+            }
         }
         String queryText = 
                 "SELECT part_name, part_number, vendor, qty, shipped, receive "
                 + "FROM medlinesoft.part" + clauseQueryPartText.toString() + orderQueryPartText;
         PreparedStatement ps = connection.prepareStatement(queryText);
-        for (Object o : searchParams) {
+        for (Object o : querySearchParams) {
             if (o instanceof String) {
-                ps.setString(searchParams.indexOf(o) + 1, o.toString());
+                ps.setString(querySearchParams.indexOf(o) + 1, o.toString());
             }
             if (o instanceof Integer) {
-                ps.setInt(searchParams.indexOf(o) + 1, (Integer)o);
+                ps.setInt(querySearchParams.indexOf(o) + 1, (Integer)o);
             }
             if (o instanceof Date) {
-                ps.setDate(searchParams.indexOf(o) + 1, (Date)o);
+                ps.setDate(querySearchParams.indexOf(o) + 1, (Date)o);
             }
         }
         return ps;

@@ -1,20 +1,21 @@
 package ru.medlinesoft.simplewebapplication.model;
 
+import java.util.Map;
+
 /**
  * Массив параметров запроса.
  */
 public class PartParameters {
-    
+
+    public PartParameters(String order, String orderedFieldName, Map<String, String> searchParameters) {
+        this.order = order;
+        this.orderedFieldName = orderedFieldName;
+        this.searchParameters = searchParameters;
+    }
+
     private String order;
     private String orderedFieldName;
-    private String searchPartNumberInput;
-    private String searchPartNameInput;
-    private String searchVendorInput;
-    private String searchQtyInput;
-    private String searchShippedAfterInput;
-    private String searchShippedBeforeInput;
-    private String searchReceiveAfterInput;
-    private String searchReceiveBeforeInput;
+    private Map<String, String> searchParameters;
 
     /**
      * @return the order
@@ -45,115 +46,17 @@ public class PartParameters {
     }
 
     /**
-     * @return the searchPartNumberInput
+     * @return the searchParameters
      */
-    public String getSearchPartNumberInput() {
-        return searchPartNumberInput;
+    public Map<String, String> getSearchParameters() {
+        return searchParameters;
     }
 
     /**
-     * @param searchPartNumberInput the searchPartNumberInput to set
+     * @param searchParameters the searchParameters to set
      */
-    public void setSearchPartNumberInput(String searchPartNumberInput) {
-        this.searchPartNumberInput = searchPartNumberInput;
-    }
-
-    /**
-     * @return the searchPartNameInput
-     */
-    public String getSearchPartNameInput() {
-        return searchPartNameInput;
-    }
-
-    /**
-     * @param searchPartNameInput the searchPartNameInput to set
-     */
-    public void setSearchPartNameInput(String searchPartNameInput) {
-        this.searchPartNameInput = searchPartNameInput;
-    }
-
-    /**
-     * @return the searchVendorInput
-     */
-    public String getSearchVendorInput() {
-        return searchVendorInput;
-    }
-
-    /**
-     * @param searchVendorInput the searchVendorInput to set
-     */
-    public void setSearchVendorInput(String searchVendorInput) {
-        this.searchVendorInput = searchVendorInput;
-    }
-
-    /**
-     * @return the searchQtyInput
-     */
-    public String getSearchQtyInput() {
-        return searchQtyInput;
-    }
-
-    /**
-     * @param searchQtyInput the searchQtyInput to set
-     */
-    public void setSearchQtyInput(String searchQtyInput) {
-        this.searchQtyInput = searchQtyInput;
-    }
-
-    /**
-     * @return the searchShippedAfterInput
-     */
-    public String getSearchShippedAfterInput() {
-        return searchShippedAfterInput;
-    }
-
-    /**
-     * @param searchShippedAfterInput the searchShippedAfterInput to set
-     */
-    public void setSearchShippedAfterInput(String searchShippedAfterInput) {
-        this.searchShippedAfterInput = searchShippedAfterInput;
-    }
-
-    /**
-     * @return the searchShippedBeforeInput
-     */
-    public String getSearchShippedBeforeInput() {
-        return searchShippedBeforeInput;
-    }
-
-    /**
-     * @param searchShippedBeforeInput the searchShippedBeforeInput to set
-     */
-    public void setSearchShippedBeforeInput(String searchShippedBeforeInput) {
-        this.searchShippedBeforeInput = searchShippedBeforeInput;
-    }
-
-    /**
-     * @return the searchReceiveAfterInput
-     */
-    public String getSearchReceiveAfterInput() {
-        return searchReceiveAfterInput;
-    }
-
-    /**
-     * @param searchReceiveAfterInput the searchReceiveAfterInput to set
-     */
-    public void setSearchReceiveAfterInput(String searchReceiveAfterInput) {
-        this.searchReceiveAfterInput = searchReceiveAfterInput;
-    }
-
-    /**
-     * @return the searchReceiveBeforeInput
-     */
-    public String getSearchReceiveBeforeInput() {
-        return searchReceiveBeforeInput;
-    }
-
-    /**
-     * @param searchReceiveBeforeInput the searchReceiveBeforeInput to set
-     */
-    public void setSearchReceiveBeforeInput(String searchReceiveBeforeInput) {
-        this.searchReceiveBeforeInput = searchReceiveBeforeInput;
+    public void setSearchParameters(Map<String, String> searchParameters) {
+        this.searchParameters = searchParameters;
     }
     
     

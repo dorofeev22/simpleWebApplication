@@ -37,53 +37,43 @@ public class PartServlet extends HttpServlet {
     
     private void doRequest(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        List<PartDto> parts = new ArrayList<>();
         String order = request.getParameter("order");
         String orderedFieldName = request.getParameter("columnName");
-        PartParameters partParameters = new PartParameters();
         Map<String, String> searchParameters = new HashMap<>();
-        partParameters.setOrder(order);
-        partParameters.setOrderedFieldName(orderedFieldName);
         String searchPartNumberInput = request.getParameter("part_number_input");
         if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
-            partParameters.setSearchPartNumberInput(searchPartNumberInput);
             searchParameters.put("part_number_input", searchPartNumberInput);
         }
         String searchPartNameInput = request.getParameter("part_name_input");
         if (!Strings.isNullOrEmpty(searchPartNameInput)) {
-            partParameters.setSearchPartNameInput(searchPartNameInput);
             searchParameters.put("part_name_input", searchPartNameInput);
         }
         String searchVendorInput = request.getParameter("vendor_input");
         if (!Strings.isNullOrEmpty(searchVendorInput)) {
-            partParameters.setSearchVendorInput(searchVendorInput);
             searchParameters.put("vendor_input", searchVendorInput);
         }
         String searchQtyInput = request.getParameter("qty_input");
         if (!Strings.isNullOrEmpty(searchQtyInput)) {
-            partParameters.setSearchQtyInput(searchQtyInput);
             searchParameters.put("qty_input", searchQtyInput);
         }
         String searchShippedAfterInput = request.getParameter("shipped_after_input");
         if (!Strings.isNullOrEmpty(searchShippedAfterInput)) {
-            partParameters.setSearchShippedAfterInput(searchShippedAfterInput);
             searchParameters.put("shipped_after_input", searchShippedAfterInput);
         }
         String searchShippedBeforeInput = request.getParameter("shipped_before_input");
         if (!Strings.isNullOrEmpty(searchShippedBeforeInput)) {
-            partParameters.setSearchShippedBeforeInput(searchShippedBeforeInput);
             searchParameters.put("shipped_before_input", searchShippedBeforeInput);
         }
         String searchReceiveAfterInput = request.getParameter("receive_after_input");
         if (!Strings.isNullOrEmpty(searchReceiveAfterInput)) {
-            partParameters.setSearchReceiveAfterInput(searchReceiveAfterInput);
             searchParameters.put("receive_after_input", searchReceiveAfterInput);
         }
         String searchReceiveBeforeInput = request.getParameter("receive_before_input");
         if (!Strings.isNullOrEmpty(searchReceiveBeforeInput)) {
-            partParameters.setSearchReceiveBeforeInput(searchReceiveBeforeInput);
             searchParameters.put("receive_before_input", searchReceiveBeforeInput);
         }
-        List<PartDto> parts = new ArrayList<>();
+        PartParameters partParameters = new PartParameters(order, orderedFieldName, searchParameters);
         try {
             parts = new PartService().findDtoParts(partParameters);
         } catch (ClassNotFoundException ex) {
