@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ru.medlinesoft.simplewebapplication.dto.PartDto;
 import ru.medlinesoft.simplewebapplication.domain.ParameterNames;
-import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldsName;
+import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldName;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
 import ru.medlinesoft.simplewebapplication.service.PartService;
 
@@ -61,22 +61,22 @@ public class PartServlet extends HttpServlet {
         }
         request.setAttribute("parts", parts);
         request.setAttribute("part_number_order", 
-                ReferenceFieldsName.getOrderSortByActualFields(
+                ReferenceFieldName.getOrderSortByActualFields(
                         orderedFieldName, "part_number_order", order));
         request.setAttribute("part_name_order", 
-                ReferenceFieldsName.getOrderSortByActualFields(
+                ReferenceFieldName.getOrderSortByActualFields(
                         orderedFieldName, "part_name_order", order));
         request.setAttribute("vendor_order", 
-                ReferenceFieldsName.getOrderSortByActualFields(
+                ReferenceFieldName.getOrderSortByActualFields(
                         orderedFieldName, "vendor_order", order));
         request.setAttribute("qty_order", 
-                ReferenceFieldsName.getOrderSortByActualFields(
+                ReferenceFieldName.getOrderSortByActualFields(
                         orderedFieldName, "qty_order", order));
         request.setAttribute("shipped_order", 
-                ReferenceFieldsName.getOrderSortByActualFields(
+                ReferenceFieldName.getOrderSortByActualFields(
                         orderedFieldName, "shipped_order", order));
         request.setAttribute("receive_order", 
-                ReferenceFieldsName.getOrderSortByActualFields(
+                ReferenceFieldName.getOrderSortByActualFields(
                         orderedFieldName, "receive_order", order));
         request.setAttribute("search_params", searchParameters);
         request.getRequestDispatcher("/WEB-INF/parts.jsp").forward(request, response);

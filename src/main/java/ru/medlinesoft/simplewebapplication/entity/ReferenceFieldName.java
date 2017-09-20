@@ -3,7 +3,7 @@ package ru.medlinesoft.simplewebapplication.entity;
 /**
  * Справочник типов сортировки.
  */
-public enum ReferenceFieldsName {
+public enum ReferenceFieldName {
 
     part_name, part_number, vendor, qty, shipped, receive;
 
@@ -12,7 +12,7 @@ public enum ReferenceFieldsName {
         if (fieldsName == null || actualOrder == null) {
             return ReferenceSortOrder.asc.name();
         }
-        ReferenceFieldsName referenceFieldsName = createReferenceFieldsName(fieldsName);
+        ReferenceFieldName referenceFieldsName = createReferenceFieldsName(fieldsName);
         switch (referenceFieldsName) {
             case part_name:
                 return parameter.equals("part_name_order") 
@@ -37,10 +37,10 @@ public enum ReferenceFieldsName {
         }
     }
 
-    private static ReferenceFieldsName createReferenceFieldsName(String filedsName) {
-        ReferenceFieldsName referenceFieldsName;
+    private static ReferenceFieldName createReferenceFieldsName(String filedsName) {
+        ReferenceFieldName referenceFieldsName;
         try {
-            referenceFieldsName = ReferenceFieldsName.valueOf(filedsName);
+            referenceFieldsName = ReferenceFieldName.valueOf(filedsName);
         } catch (IllegalArgumentException ex) {
             referenceFieldsName = null;
         }

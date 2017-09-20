@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import ru.medlinesoft.simplewebapplication.domain.ParameterNames;
 import ru.medlinesoft.simplewebapplication.entity.Part;
-import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldsName;
+import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldName;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
 
 /**
@@ -64,65 +65,28 @@ public class PartRepository {
         StringBuilder clauseQueryPartText = new StringBuilder();
         Map<String, String> searchParameters = parameters.getSearchParameters();
         List<Object> querySearchParams = new ArrayList<>();
-        if (searchParameters != null) {
-            String searchPartNumberInput = searchParameters.get("part_number_input");
-            String searchPartNameInput = searchParameters.get("part_name_input");
-            String searchVendorInput = searchParameters.get("vendor_input");
-            String searchQtyInput = searchParameters.get("qty_input");
-            String searchShippedAfterInput = searchParameters.get("shipped_after_input");
-            String searchShippedBeforeInput = searchParameters.get("shipped_before_input");
-            String searchReceiveAfterInput = searchParameters.get("receive_after_input");
-            String searchReceiveBeforeInput = searchParameters.get("receive_before_input");
+        if (!searchParameters.isEmpty()) {
             clauseQueryPartText.append(" WHERE ");
-            if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
-                clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.part_number.name()).append(") LIKE ? ");
-                searchPartNumberInput = "%" + searchPartNumberInput.toLowerCase() + "%";
-                querySearchParams.add(searchPartNumberInput);
-            }
-            if (!Strings.isNullOrEmpty(searchPartNameInput)) {
-                if (!querySearchParams.isEmpty()) {
-                    clauseQueryPartText.append(" AND ");
-                }
-                clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.part_name.name()).append(") LIKE ? ");
-                searchPartNameInput = "%" + searchPartNameInput.toLowerCase() + "%";
-                querySearchParams.add(searchPartNameInput);
-            }
-            if (!Strings.isNullOrEmpty(searchVendorInput)) {
-                if (!querySearchParams.isEmpty()) {
-                    clauseQueryPartText.append(" AND ");
-                }
-                clauseQueryPartText.append("LOWER(").append(ReferenceFieldsName.vendor.name()).append(") LIKE ? ");
-                searchVendorInput = "%" + searchVendorInput.toLowerCase() + "%";
-                querySearchParams.add(searchVendorInput);
-            }
-            if (!Strings.isNullOrEmpty(searchQtyInput)) {
-                if (!querySearchParams.isEmpty()) {
-                    clauseQueryPartText.append(" AND ");
-                }
-                clauseQueryPartText.append(ReferenceFieldsName.qty.name()).append(" >= ? ");
-                querySearchParams.add(Integer.valueOf(searchQtyInput));
-            }
-            if (!Strings.isNullOrEmpty(searchShippedAfterInput) 
-                    && !Strings.isNullOrEmpty(searchShippedBeforeInput)) {
-                if (!querySearchParams.isEmpty()) {
-                    clauseQueryPartText.append(" AND ");
-                }
-                clauseQueryPartText.append(ReferenceFieldsName.shipped.name()).append(" BETWEEN ? AND ? ");
-                querySearchParams.add(new java.sql.Date(getDateFormat().parse(searchShippedAfterInput).getTime()));
-                querySearchParams.add(new java.sql.Date(getDateFormat().parse(searchShippedBeforeInput).getTime()));
-            }
-            if (!Strings.isNullOrEmpty(searchReceiveAfterInput) 
-                    && !Strings.isNullOrEmpty(searchReceiveBeforeInput)) {
-                if (!querySearchParams.isEmpty()) {
-                    clauseQueryPartText.append(" AND ");
-                }
-                clauseQueryPartText.append(ReferenceFieldsName.receive.name()).append(" BETWEEN ? AND ? ");
-                querySearchParams.add(new java.sql.Date(getDateFormat().parse(searchReceiveAfterInput).getTime()));
-                querySearchParams.add(new java.sql.Date(getDateFormat().parse(searchReceiveBeforeInput).getTime()));
-            }
-            if (querySearchParams.isEmpty()) {
-                clauseQueryPartText = new StringBuilder();
-            }
+            createStrQueryParam(
+                    searchParameters.get(ParameterNames.PART_NUMBER_INPUT), clauseQueryPartText, 
+                    querySearchParams, ReferenceFieldName.part_number);
+            createStrQueryParam(
+                    searchParameters.get(ParameterNames.PART_NAME_INPUT), clauseQueryPartText, 
+                    querySearchParams, ReferenceFieldName.part_name);
+            createStrQueryParam(
+                    searchParameters.get(ParameterNames.VENDOR_INPUT), clauseQueryPartText, 
+                    querySearchParams, ReferenceFieldName.vendor);
+            createIntQueryParam(
+                    searchParameters.get(ParameterNames.QTY_INPUT), clauseQueryPartText, 
+                    querySearchParams, ReferenceFieldName.qty);
+            createDateQueryParam(
+                    searchParameters.get(ParameterNames.SHIPPED_AFTER_INPUT), 
+                    searchParameters.get(ParameterNames.SHIPPED_BEFORE_INPUT), 
+                    clauseQueryPartText, querySearchParams, ReferenceFieldName.shipped);
+            createDateQueryParam(
+                    searchParameters.get(ParameterNames.RECEIVE_AFTER_INPUT), 
+                    searchParameters.get(ParameterNames.RECEIVE_BEFORE_INPUT), 
+                    clauseQueryPartText, querySearchParams, ReferenceFieldName.receive);
         }
         String queryText = 
                 "SELECT part_name, part_number, vendor, qty, shipped, receive "
@@ -141,9 +105,38 @@ public class PartRepository {
         }
         return ps;
     }
-    
-    private DateFormat getDateFormat() {
-        return new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+
+    private void createStrQueryParam(
+            String searchInput, StringBuilder clauseQueryPartText, 
+            List<Object> querySearchParams, ReferenceFieldName fieldName) {
+        if (!Strings.isNullOrEmpty(searchInput)) {
+            clauseQueryPartText.append(!querySearchParams.isEmpty() ? " AND " : "")
+                    .append("LOWER(").append(fieldName.name()).append(") LIKE ? ");
+            searchInput = "%" + searchInput.toLowerCase() + "%";
+            querySearchParams.add(searchInput);
+        }
+    }
+
+    private void createDateQueryParam(
+            String searchInputAfter, String searchInputBefore, StringBuilder clauseQueryPartText, 
+            List<Object> querySearchParams, ReferenceFieldName fieldName) throws ParseException {
+        if (!Strings.isNullOrEmpty(searchInputAfter) && !Strings.isNullOrEmpty(searchInputBefore)) {
+            clauseQueryPartText.append(!querySearchParams.isEmpty() ? " AND " : "")
+                    .append(fieldName.name()).append(" BETWEEN ? AND ? ");
+            DateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+            querySearchParams.add(new java.sql.Date(df.parse(searchInputAfter).getTime()));
+            querySearchParams.add(new java.sql.Date(df.parse(searchInputBefore).getTime()));
+        }
+    }
+
+    private void createIntQueryParam(
+            String searchInput, StringBuilder clauseQueryPartText, 
+            List<Object> querySearchParams, ReferenceFieldName fieldName) {
+        if (!Strings.isNullOrEmpty(searchInput)) {
+            clauseQueryPartText.append(!querySearchParams.isEmpty() ? " AND " : "")
+                    .append(fieldName.name()).append(" >= ? ");
+            querySearchParams.add(Integer.valueOf(searchInput));
+        }
     }
 
 }
