@@ -1,9 +1,12 @@
 package ru.medlinesoft.simplewebapplication.servlet;
 
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,20 +39,53 @@ public class PartServlet extends HttpServlet {
             throws ServletException, IOException {
         String order = request.getParameter("order");
         String orderedFieldName = request.getParameter("columnName");
-        PartParameters parameters = new PartParameters();
-        parameters.setOrder(order);
-        parameters.setOrderedFieldName(orderedFieldName);
-        parameters.setSearchPartNumberInput(request.getParameter("part_number_input"));
-        parameters.setSearchPartNameInput(request.getParameter("part_name_input"));
-        parameters.setSearchVendorInput(request.getParameter("vendor_input"));
-        parameters.setSearchQtyInput(request.getParameter("qty_input"));
-        parameters.setSearchShippedAfterInput(request.getParameter("shipped_after_input"));
-        parameters.setSearchShippedBeforeInput(request.getParameter("shipped_before_input"));
-        parameters.setSearchReceiveAfterInput(request.getParameter("receive_after_input"));
-        parameters.setSearchReceiveBeforeInput(request.getParameter("receive_before_input"));
+        PartParameters partParameters = new PartParameters();
+        Map<String, String> searchParameters = new HashMap<>();
+        partParameters.setOrder(order);
+        partParameters.setOrderedFieldName(orderedFieldName);
+        String searchPartNumberInput = request.getParameter("part_number_input");
+        if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
+            partParameters.setSearchPartNumberInput(searchPartNumberInput);
+            searchParameters.put("part_number_input", searchPartNumberInput);
+        }
+        String searchPartNameInput = request.getParameter("part_name_input");
+        if (!Strings.isNullOrEmpty(searchPartNameInput)) {
+            partParameters.setSearchPartNameInput(searchPartNameInput);
+            searchParameters.put("part_name_input", searchPartNameInput);
+        }
+        String searchVendorInput = request.getParameter("vendor_input");
+        if (!Strings.isNullOrEmpty(searchVendorInput)) {
+            partParameters.setSearchVendorInput(searchVendorInput);
+            searchParameters.put("vendor_input", searchVendorInput);
+        }
+        String searchQtyInput = request.getParameter("qty_input");
+        if (!Strings.isNullOrEmpty(searchQtyInput)) {
+            partParameters.setSearchQtyInput(searchQtyInput);
+            searchParameters.put("qty_input", searchQtyInput);
+        }
+        String searchShippedAfterInput = request.getParameter("shipped_after_input");
+        if (!Strings.isNullOrEmpty(searchShippedAfterInput)) {
+            partParameters.setSearchShippedAfterInput(searchShippedAfterInput);
+            searchParameters.put("shipped_after_input", searchShippedAfterInput);
+        }
+        String searchShippedBeforeInput = request.getParameter("shipped_before_input");
+        if (!Strings.isNullOrEmpty(searchShippedBeforeInput)) {
+            partParameters.setSearchShippedBeforeInput(searchShippedBeforeInput);
+            searchParameters.put("shipped_before_input", searchShippedBeforeInput);
+        }
+        String searchReceiveAfterInput = request.getParameter("receive_after_input");
+        if (!Strings.isNullOrEmpty(searchReceiveAfterInput)) {
+            partParameters.setSearchReceiveAfterInput(searchReceiveAfterInput);
+            searchParameters.put("receive_after_input", searchReceiveAfterInput);
+        }
+        String searchReceiveBeforeInput = request.getParameter("receive_before_input");
+        if (!Strings.isNullOrEmpty(searchReceiveBeforeInput)) {
+            partParameters.setSearchReceiveBeforeInput(searchReceiveBeforeInput);
+            searchParameters.put("receive_before_input", searchReceiveBeforeInput);
+        }
         List<PartDto> parts = new ArrayList<>();
         try {
-            parts = new PartService().findDtoParts(parameters);
+            parts = new PartService().findDtoParts(partParameters);
         } catch (ClassNotFoundException ex) {
             request.setAttribute("error", ex.getMessage());
         } catch (ParseException ex) {
@@ -74,6 +110,7 @@ public class PartServlet extends HttpServlet {
         request.setAttribute("receive_order", 
                 ReferenceFieldsName.getOrderSortByActualFields(
                         orderedFieldName, "receive_order", order));
+        request.setAttribute("search_params", searchParameters);
         request.getRequestDispatcher("/WEB-INF/parts.jsp").forward(request, response);
     }
 
