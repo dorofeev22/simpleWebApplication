@@ -18,6 +18,10 @@
                 List<PartDto> parts = (ArrayList<PartDto>)request.getAttribute("parts");
                 String partNumberOrder = (String)request.getAttribute("part_number_order");
                 String partNameOrder = (String)request.getAttribute("part_name_order");
+                String vendorOrder = (String)request.getAttribute("vendor_order");
+                String qtyOrder = (String)request.getAttribute("qty_order");
+                String shippedOrder = (String)request.getAttribute("shipped_order");
+                String receivedOrder = (String)request.getAttribute("receive_order");
             %>
         <p><%= error %></p>
         <div>
@@ -29,10 +33,18 @@
                     <th>
                         <a href="<%= contextPath %>?order=<%= partNameOrder %>&columnName=part_name">PartName</a>
                     </th>
-                    <th>Vendor</th>
-                    <th>Qty</th>
-                    <th>Shipped</th>
-                    <th>Received</th>
+                    <th>
+                        <a href="<%= contextPath %>?order=<%= vendorOrder %>&columnName=vendor">Vendor</a>
+                    </th>
+                    <th>
+                        <a href="<%= contextPath %>?order=<%= qtyOrder %>&columnName=qty">Qty</a>
+                    </th>
+                    <th>
+                        <a href="<%= contextPath %>?order=<%= shippedOrder %>&columnName=shipped">Shipped</a>
+                    </th>
+                    <th>
+                        <a href="<%= contextPath %>?order=<%= receivedOrder %>&columnName=receive">Received</a>
+                    </th>
                 </tr>
             <%
                 for (PartDto dto : parts) {

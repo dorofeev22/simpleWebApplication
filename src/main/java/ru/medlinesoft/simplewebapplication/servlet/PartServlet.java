@@ -10,11 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ru.medlinesoft.simplewebapplication.dto.PartDto;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldsName;
-import ru.medlinesoft.simplewebapplication.entity.ReferenceSortOrder;
 import ru.medlinesoft.simplewebapplication.service.PartService;
 
 /**
- * Сервлет для получения данных Part из базы.
+ * Сервлет для получения данных Part из базы и вывода на страницу.
  */
 @WebServlet(urlPatterns = {"/"})
 public class PartServlet extends HttpServlet {
@@ -37,6 +36,18 @@ public class PartServlet extends HttpServlet {
         request.setAttribute("part_name_order", 
                 ReferenceFieldsName.getOrderSortByActualFields(
                         fieldsName, "part_name_order", order));
+        request.setAttribute("vendor_order", 
+                ReferenceFieldsName.getOrderSortByActualFields(
+                        fieldsName, "vendor_order", order));
+        request.setAttribute("qty_order", 
+                ReferenceFieldsName.getOrderSortByActualFields(
+                        fieldsName, "qty_order", order));
+        request.setAttribute("shipped_order", 
+                ReferenceFieldsName.getOrderSortByActualFields(
+                        fieldsName, "shipped_order", order));
+        request.setAttribute("receive_order", 
+                ReferenceFieldsName.getOrderSortByActualFields(
+                        fieldsName, "receive_order", order));
         request.getRequestDispatcher("/WEB-INF/parts.jsp").forward(request, response);
     }
     

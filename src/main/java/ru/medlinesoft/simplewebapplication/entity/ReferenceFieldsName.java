@@ -20,6 +20,18 @@ public enum ReferenceFieldsName {
             case part_number:
                 return parameter.equals("part_number_order") 
                         ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc.name();
+            case vendor:
+                return parameter.equals("vendor_order") 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc.name();
+            case qty:
+                return parameter.equals("qty_order") 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc.name();
+            case shipped:
+                return parameter.equals("shipped_order") 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc.name();
+            case receive:
+                return parameter.equals("receive_order") 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc.name();
             default:
                 return null;
         }
