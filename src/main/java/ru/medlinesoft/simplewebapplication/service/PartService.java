@@ -7,8 +7,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import ru.medlinesoft.simplewebapplication.domain.OrderParameterNames;
 import ru.medlinesoft.simplewebapplication.dto.PartDto;
 import ru.medlinesoft.simplewebapplication.entity.Part;
+import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldName;
+import ru.medlinesoft.simplewebapplication.entity.ReferenceSortOrder;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
 import ru.medlinesoft.simplewebapplication.repository.PartRepository;
 
@@ -36,6 +39,36 @@ public class PartService {
         dto.setShipped(df.format(part.getShipped()));
         dto.setVendor(part.getVendor());
         return dto;
+    }
+
+    public ReferenceSortOrder getSortOrderForField(
+            String fieldsName, OrderParameterNames parameter, String actualOrder) {
+        if (fieldsName == null || actualOrder == null) {
+            return ReferenceSortOrder.asc;
+        }
+        ReferenceFieldName referenceFieldsName = ReferenceFieldName.createReferenceFieldsName(fieldsName);
+        switch (referenceFieldsName) {
+            case part_name:
+                return parameter.equals(OrderParameterNames.part_name_order) 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc;
+            case part_number:
+                return parameter.equals(OrderParameterNames.part_number_order) 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc;
+            case vendor:
+                return parameter.equals(OrderParameterNames.vendor_order) 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc;
+            case qty:
+                return parameter.equals(OrderParameterNames.qty_order) 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc;
+            case shipped:
+                return parameter.equals(OrderParameterNames.shipped_order) 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc;
+            case receive:
+                return parameter.equals(OrderParameterNames.receive_order) 
+                        ? ReferenceSortOrder.inverseOrder(actualOrder) : ReferenceSortOrder.asc;
+            default:
+                return null;
+        }
     }
 
 }

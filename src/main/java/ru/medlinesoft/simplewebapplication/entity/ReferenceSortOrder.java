@@ -12,10 +12,10 @@ public enum ReferenceSortOrder {
      * @param inputOrder
      * @return 
      */
-    public static String inverseOrder(String inputOrder) {
+    public static ReferenceSortOrder inverseOrder(String inputOrder) {
         ReferenceSortOrder order = inputOrder != null ? createSortOrder(inputOrder) : asc;
         return order.equals(ReferenceSortOrder.asc) ? 
-                ReferenceSortOrder.desc.name() : ReferenceSortOrder.asc.name();
+                ReferenceSortOrder.desc : ReferenceSortOrder.asc;
     }
 
     /**

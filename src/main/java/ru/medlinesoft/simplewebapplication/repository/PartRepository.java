@@ -8,12 +8,8 @@ import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import ru.medlinesoft.simplewebapplication.domain.ParameterNames;
+import java.util.*;
+import ru.medlinesoft.simplewebapplication.domain.SearchParameterNames;
 import ru.medlinesoft.simplewebapplication.entity.Part;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldName;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
@@ -80,25 +76,19 @@ public class PartRepository {
         List<Object> querySearchParams = new ArrayList<>();
         if (!searchParameters.isEmpty()) {
             clauseQueryPartText.append(" WHERE ");
-            createStrQueryParam(
-                    searchParameters.get(ParameterNames.PART_NUMBER_INPUT), clauseQueryPartText, 
+            createStrQueryParam(searchParameters.get(SearchParameterNames.PART_NUMBER_INPUT), clauseQueryPartText, 
                     querySearchParams, ReferenceFieldName.part_number);
-            createStrQueryParam(
-                    searchParameters.get(ParameterNames.PART_NAME_INPUT), clauseQueryPartText, 
+            createStrQueryParam(searchParameters.get(SearchParameterNames.PART_NAME_INPUT), clauseQueryPartText, 
                     querySearchParams, ReferenceFieldName.part_name);
-            createStrQueryParam(
-                    searchParameters.get(ParameterNames.VENDOR_INPUT), clauseQueryPartText, 
+            createStrQueryParam(searchParameters.get(SearchParameterNames.VENDOR_INPUT), clauseQueryPartText, 
                     querySearchParams, ReferenceFieldName.vendor);
-            createIntQueryParam(
-                    searchParameters.get(ParameterNames.QTY_INPUT), clauseQueryPartText, 
+            createIntQueryParam(searchParameters.get(SearchParameterNames.QTY_INPUT), clauseQueryPartText, 
                     querySearchParams, ReferenceFieldName.qty);
-            createDateQueryParam(
-                    searchParameters.get(ParameterNames.SHIPPED_AFTER_INPUT), 
-                    searchParameters.get(ParameterNames.SHIPPED_BEFORE_INPUT), 
+            createDateQueryParam(searchParameters.get(SearchParameterNames.SHIPPED_AFTER_INPUT), 
+                    searchParameters.get(SearchParameterNames.SHIPPED_BEFORE_INPUT), 
                     clauseQueryPartText, querySearchParams, ReferenceFieldName.shipped);
-            createDateQueryParam(
-                    searchParameters.get(ParameterNames.RECEIVE_AFTER_INPUT), 
-                    searchParameters.get(ParameterNames.RECEIVE_BEFORE_INPUT), 
+            createDateQueryParam(searchParameters.get(SearchParameterNames.RECEIVE_AFTER_INPUT), 
+                    searchParameters.get(SearchParameterNames.RECEIVE_BEFORE_INPUT), 
                     clauseQueryPartText, querySearchParams, ReferenceFieldName.receive);
         }
         String queryText = 
@@ -112,8 +102,8 @@ public class PartRepository {
             if (o instanceof Integer) {
                 ps.setInt(querySearchParams.indexOf(o) + 1, (Integer)o);
             }
-            if (o instanceof Date) {
-                ps.setDate(querySearchParams.indexOf(o) + 1, (Date)o);
+            if (o instanceof java.sql.Date) {
+                ps.setDate(querySearchParams.indexOf(o) + 1, (java.sql.Date)o);
             }
         }
         return ps;

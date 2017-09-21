@@ -1,9 +1,9 @@
 package ru.medlinesoft.simplewebapplication.domain;
 
 /**
- * 
+ * Параметры запроса для поиска.
  */
-public abstract class ParameterNames {
+public abstract class SearchParameterNames {
     
     public static final String PART_NUMBER_INPUT = "part_number_input";
     public static final String PART_NAME_INPUT = "part_name_input";
