@@ -74,53 +74,47 @@
             <table>
                 <tr>
                     <th>
-                        <a href="<%= contextPath %>?order=<%= partNumberOrder %>&columnName=part_number<%= urlParams %>">PN</a>
+                        <a href="<%= contextPath %>?columnName=part_number&order=<%= partNumberOrder + urlParams %>">PN</a>
                     </th>
                     <th>
-                        <a href="<%= contextPath %>?order=<%= partNameOrder %>&columnName=part_name<%= urlParams %>">PartName</a>
+                        <a href="<%= contextPath %>?columnName=part_name&order=<%= partNameOrder + urlParams %>">PartName</a>
                     </th>
                     <th>
-                        <a href="<%= contextPath %>?order=<%= vendorOrder %>&columnName=vendor<%= urlParams %>">Vendor</a>
+                        <a href="<%= contextPath %>?columnName=vendor&order=<%= vendorOrder + urlParams %>">Vendor</a>
                     </th>
                     <th>
-                        <a href="<%= contextPath %>?order=<%= qtyOrder %>&columnName=qty<%= urlParams %>">Qty</a>
+                        <a href="<%= contextPath %>?columnName=qty&order=<%= qtyOrder + urlParams %>">Qty</a>
                     </th>
                     <th>
-                        <a href="<%= contextPath %>?order=<%= shippedOrder %>&columnName=shipped<%= urlParams %>">Shipped</a>
+                        <a href="<%= contextPath %>?columnName=shipped&order=<%= shippedOrder + urlParams %>">Shipped</a>
                     </th>
                     <th>
-                        <a href="<%= contextPath %>?order=<%= receivedOrder %>&columnName=receive<%= urlParams %>">Received</a>
+                        <a href="<%= contextPath %>?columnName=receive&order=<%= receivedOrder + urlParams %>">Received</a>
                     </th>
                 </tr>
             <%
                 for (PartDto dto : parts) {
-                    String partNumber = dto.getPartNumber();
-                    String partName = dto.getPartName();
-                    String vendor = dto.getVendor();
-                    String qty = dto.getQty();
-                    String shipped = dto.getShipped();
-                    String receive = dto.getReceive();
             %>
-                        <tr>
-                            <td>
-                                <a><%= partNumber %></a>
-                            </td>
-                            <td>
-                                <a><%= partName %></a>
-                            </td>
-                            <td>
-                                <a><%= vendor %></a>
-                            </td>
-                            <td>
-                                <a><%= qty %></a>
-                            </td>
-                            <td>
-                                <a><%= shipped %></a>
-                            </td>
-                            <td>
-                                <a><%= receive %></a>
-                            </td>
-                        </tr>
+                <tr>
+                    <td>
+                        <a><%= dto.getPartNumber() %></a>
+                    </td>
+                    <td>
+                        <a><%= dto.getPartName() %></a>
+                    </td>
+                    <td>
+                        <a><%= dto.getVendor() %></a>
+                    </td>
+                    <td>
+                        <a><%= dto.getQty() %></a>
+                    </td>
+                    <td>
+                        <a><%= dto.getShipped() %></a>
+                    </td>
+                    <td>
+                        <a><%= dto.getReceive() %></a>
+                    </td>
+                </tr>
             <%
                 }
             %>
