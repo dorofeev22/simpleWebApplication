@@ -1,13 +1,17 @@
 package ru.medlinesoft.simplewebapplication.model;
 
 import java.util.Map;
+import ru.medlinesoft.simplewebapplication.domain.SearchParameterName;
 
 /**
  * Массив параметров запроса.
  */
 public class PartParameters {
 
-    public PartParameters(String order, String orderedFieldName, Map<String, String> searchParameters) {
+    public PartParameters(
+            String order, 
+            String orderedFieldName, 
+            Map<SearchParameterName, String> searchParameters) {
         this.order = order;
         this.orderedFieldName = orderedFieldName;
         this.searchParameters = searchParameters;
@@ -15,7 +19,7 @@ public class PartParameters {
 
     private String order;
     private String orderedFieldName;
-    private Map<String, String> searchParameters;
+    private Map<SearchParameterName, String> searchParameters;
 
     /**
      * @return the order
@@ -48,14 +52,14 @@ public class PartParameters {
     /**
      * @return the searchParameters
      */
-    public Map<String, String> getSearchParameters() {
+    public Map<SearchParameterName, String> getSearchParameters() {
         return searchParameters;
     }
 
     /**
      * @param searchParameters the searchParameters to set
      */
-    public void setSearchParameters(Map<String, String> searchParameters) {
+    public void setSearchParameters(Map<SearchParameterName, String> searchParameters) {
         this.searchParameters = searchParameters;
     }
     

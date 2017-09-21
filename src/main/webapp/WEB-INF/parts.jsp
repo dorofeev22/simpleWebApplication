@@ -5,6 +5,7 @@
 <%@ page import="java.util.List"%>
 <%@ page import="ru.medlinesoft.simplewebapplication.dto.PartDto"%>
 <%@ page import="ru.medlinesoft.simplewebapplication.model.PartParameters"%>
+<%@ page import="ru.medlinesoft.simplewebapplication.domain.SearchParameterName"%>
 
 
 <!DOCTYPE html>
@@ -25,10 +26,12 @@
                 String qtyOrder = (String)request.getAttribute("qty_order");
                 String shippedOrder = (String)request.getAttribute("shipped_order");
                 String receivedOrder = (String)request.getAttribute("receive_order");
-                Map<String, String> searchParams = (HashMap<String, String>)request.getAttribute("search_params");
+                Map<SearchParameterName, String> searchParams = 
+                        (HashMap<SearchParameterName, String>)request.getAttribute("search_params");
+                // соберем текущие параметры поиска (фильтрации) в url, для сортировки отобранных данных
                 StringBuilder urlParams = new StringBuilder();
-                for (String key : searchParams.keySet()) {
-                    urlParams.append("&").append(key).append("=").append(searchParams.get(key));
+                for (SearchParameterName paramName : searchParams.keySet()) {
+                    urlParams.append("&").append(paramName.name()).append("=").append(searchParams.get(paramName));
                 }
             %>
         <p><%= error != null ? error : "" %></p>
@@ -67,7 +70,7 @@
                         </td>
                     </tr>
                 </table>
-                <input type="submit" value="Найти"/>
+                <input type="submit" value="Filter"/>
             </form>
         </div>
         <div>

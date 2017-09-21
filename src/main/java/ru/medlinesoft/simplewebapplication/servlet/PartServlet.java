@@ -9,9 +9,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import ru.medlinesoft.simplewebapplication.domain.OrderParameterNames;
+import ru.medlinesoft.simplewebapplication.domain.OrderParameterName;
 import ru.medlinesoft.simplewebapplication.dto.PartDto;
-import ru.medlinesoft.simplewebapplication.domain.SearchParameterNames;
+import ru.medlinesoft.simplewebapplication.domain.SearchParameterName;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceSortOrder;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
 import ru.medlinesoft.simplewebapplication.service.PartService;
@@ -29,15 +29,13 @@ public class PartServlet extends HttpServlet {
         List<PartDto> parts = new ArrayList<>();
         String currentOrder = request.getParameter("order");
         String orderedFieldName = request.getParameter("columnName");
-        Map<String, String> searchParameters = new HashMap<>();
-        putParameter(request, SearchParameterNames.PART_NUMBER_INPUT, searchParameters);
-        putParameter(request, SearchParameterNames.PART_NAME_INPUT, searchParameters);
-        putParameter(request, SearchParameterNames.VENDOR_INPUT, searchParameters);
-        putParameter(request, SearchParameterNames.QTY_INPUT, searchParameters);
-        putParameter(request, SearchParameterNames.SHIPPED_AFTER_INPUT, searchParameters);
-        putParameter(request, SearchParameterNames.SHIPPED_BEFORE_INPUT, searchParameters);
-        putParameter(request, SearchParameterNames.RECEIVE_AFTER_INPUT, searchParameters);
-        putParameter(request, SearchParameterNames.RECEIVE_BEFORE_INPUT, searchParameters);
+        Map<SearchParameterName, String> searchParameters = new HashMap<>();
+        for (SearchParameterName parameterName : SearchParameterName.values()) {
+            String searchPartNumberInput = request.getParameter(parameterName.name());
+            if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
+                searchParameters.put(parameterName, searchPartNumberInput);
+            }
+        }
         PartParameters partParameters = 
                 new PartParameters(currentOrder, orderedFieldName, searchParameters);
         try {
@@ -46,23 +44,13 @@ public class PartServlet extends HttpServlet {
             request.setAttribute("error", ex.getMessage());
         }
         request.setAttribute("parts", parts);
-        for (OrderParameterNames orderParameterName : OrderParameterNames.values()) {
+        for (OrderParameterName orderParameterName : OrderParameterName.values()) {
             ReferenceSortOrder order = 
                     partService.getSortOrderForField(orderedFieldName, orderParameterName, currentOrder);
             request.setAttribute(orderParameterName.name(), order.name());
         }
         request.setAttribute("search_params", searchParameters);
         request.getRequestDispatcher("/WEB-INF/parts.jsp").forward(request, response);
-    }
-    
-    private void putParameter(
-            HttpServletRequest request, 
-            String parameterName, 
-            Map<String, String> searchParameters) {
-        String searchPartNumberInput = request.getParameter(parameterName);
-        if (!Strings.isNullOrEmpty(searchPartNumberInput)) {
-            searchParameters.put(parameterName, searchPartNumberInput);
-        }
     }
 
 }

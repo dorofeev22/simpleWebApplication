@@ -9,7 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import ru.medlinesoft.simplewebapplication.domain.SearchParameterNames;
+import ru.medlinesoft.simplewebapplication.domain.SearchParameterName;
 import ru.medlinesoft.simplewebapplication.entity.Part;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldName;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
@@ -21,9 +21,8 @@ public class PartRepository {
     
     private Connection getConnection() throws ClassNotFoundException, IOException {
         Properties prop = new Properties();
-        InputStream inputStream;
         String propFileName = "application.properties";
-        inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
         if (inputStream != null) {
             prop.load(inputStream);
         } else {
@@ -50,12 +49,12 @@ public class PartRepository {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Part part = new Part();
-                part.setPartName(rs.getString("part_name"));
-                part.setPartNumber(rs.getString("part_number"));
-                part.setVendor(rs.getString("vendor"));
-                part.setQty(rs.getInt("qty"));
-                part.setShipped(rs.getDate("shipped"));
-                part.setReceive(rs.getDate("receive"));
+                part.setPartName(rs.getString(ReferenceFieldName.part_name.name()));
+                part.setPartNumber(rs.getString(ReferenceFieldName.part_number.name()));
+                part.setVendor(rs.getString(ReferenceFieldName.vendor.name()));
+                part.setQty(rs.getInt(ReferenceFieldName.qty.name()));
+                part.setShipped(rs.getDate(ReferenceFieldName.shipped.name()));
+                part.setReceive(rs.getDate(ReferenceFieldName.receive.name()));
                 parts.add(part);
             }
             rs.close();
@@ -72,29 +71,32 @@ public class PartRepository {
         String orderedFieldName = parameters.getOrderedFieldName();
         String orderQueryPartText = order != null ? " ORDER BY " + orderedFieldName + " " + order : "";
         StringBuilder clauseQueryPartText = new StringBuilder();
-        Map<String, String> searchParameters = parameters.getSearchParameters();
+        Map<SearchParameterName, String> searchParameters = parameters.getSearchParameters();
         List<Object> querySearchParams = new ArrayList<>();
+        // Строим часть запроса с условиями фильтрации и кладем значения для фильтрации в список объектов
         if (!searchParameters.isEmpty()) {
             clauseQueryPartText.append(" WHERE ");
-            createStrQueryParam(searchParameters.get(SearchParameterNames.PART_NUMBER_INPUT), clauseQueryPartText, 
+            createStrQueryParam(searchParameters.get(SearchParameterName.part_number_input), clauseQueryPartText, 
                     querySearchParams, ReferenceFieldName.part_number);
-            createStrQueryParam(searchParameters.get(SearchParameterNames.PART_NAME_INPUT), clauseQueryPartText, 
+            createStrQueryParam(searchParameters.get(SearchParameterName.part_name_input), clauseQueryPartText, 
                     querySearchParams, ReferenceFieldName.part_name);
-            createStrQueryParam(searchParameters.get(SearchParameterNames.VENDOR_INPUT), clauseQueryPartText, 
+            createStrQueryParam(searchParameters.get(SearchParameterName.vendor_input), clauseQueryPartText, 
                     querySearchParams, ReferenceFieldName.vendor);
-            createIntQueryParam(searchParameters.get(SearchParameterNames.QTY_INPUT), clauseQueryPartText, 
+            createIntQueryParam(searchParameters.get(SearchParameterName.qty_input), clauseQueryPartText, 
                     querySearchParams, ReferenceFieldName.qty);
-            createDateQueryParam(searchParameters.get(SearchParameterNames.SHIPPED_AFTER_INPUT), 
-                    searchParameters.get(SearchParameterNames.SHIPPED_BEFORE_INPUT), 
+            createDateQueryParam(searchParameters.get(SearchParameterName.shipped_after_input), 
+                    searchParameters.get(SearchParameterName.shipped_before_input), 
                     clauseQueryPartText, querySearchParams, ReferenceFieldName.shipped);
-            createDateQueryParam(searchParameters.get(SearchParameterNames.RECEIVE_AFTER_INPUT), 
-                    searchParameters.get(SearchParameterNames.RECEIVE_BEFORE_INPUT), 
+            createDateQueryParam(searchParameters.get(SearchParameterName.receive_after_input), 
+                    searchParameters.get(SearchParameterName.receive_before_input), 
                     clauseQueryPartText, querySearchParams, ReferenceFieldName.receive);
         }
-        String queryText = 
-                "SELECT part_name, part_number, vendor, qty, shipped, receive "
-                + "FROM medlinesoft.part" + clauseQueryPartText.toString() + orderQueryPartText;
-        PreparedStatement ps = connection.prepareStatement(queryText);
+        // Строим текст запроса с условием сортировки и фильтрации
+        StringBuilder queryText = new StringBuilder("SELECT ");
+        queryText.append(String.join(", ", ReferenceFieldName.getFieldNames())).append(" FROM medlinesoft.part ")
+                .append(clauseQueryPartText.toString()).append(orderQueryPartText);
+        PreparedStatement ps = connection.prepareStatement(queryText.toString());
+        // устанавливаем в PreparedStatement параметры
         for (Object o : querySearchParams) {
             if (o instanceof String) {
                 ps.setString(querySearchParams.indexOf(o) + 1, o.toString());

@@ -3,7 +3,7 @@ package ru.medlinesoft.simplewebapplication.domain;
 /**
  * Параметры запроса для сортировки.
  */
-public enum OrderParameterNames {
+public enum OrderParameterName {
     
     part_number_order,
     part_name_order,
