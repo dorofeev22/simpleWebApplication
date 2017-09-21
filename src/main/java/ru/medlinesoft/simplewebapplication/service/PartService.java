@@ -14,6 +14,7 @@ import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldName;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceSortOrder;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
 import ru.medlinesoft.simplewebapplication.repository.PartRepository;
+import ru.medlinesoft.simplewebapplication.utils.Utils;
 
 /**
  * Сервис работы с данными.
@@ -31,7 +32,7 @@ public class PartService {
 
     private PartDto toDto(Part part) {
         PartDto dto = new PartDto();
-        DateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+        DateFormat df = Utils.getDateFormat();
         dto.setPartName(part.getPartName());
         dto.setPartNumber(part.getPartNumber());
         dto.setQty(String.valueOf(part.getQty()));

@@ -13,6 +13,7 @@ import ru.medlinesoft.simplewebapplication.domain.SearchParameterName;
 import ru.medlinesoft.simplewebapplication.entity.Part;
 import ru.medlinesoft.simplewebapplication.entity.ReferenceFieldName;
 import ru.medlinesoft.simplewebapplication.model.PartParameters;
+import ru.medlinesoft.simplewebapplication.utils.Utils;
 
 /**
  * Репозиторий методов доступа к базе данных.
@@ -128,7 +129,7 @@ public class PartRepository {
         if (!Strings.isNullOrEmpty(searchInputAfter) && !Strings.isNullOrEmpty(searchInputBefore)) {
             clauseQueryPartText.append(!querySearchParams.isEmpty() ? " AND " : "")
                     .append(fieldName.name()).append(" BETWEEN ? AND ? ");
-            DateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+            DateFormat df = Utils.getDateFormat();
             querySearchParams.add(new java.sql.Date(df.parse(searchInputAfter).getTime()));
             querySearchParams.add(new java.sql.Date(df.parse(searchInputBefore).getTime()));
         }
